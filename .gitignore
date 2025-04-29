@@ -1,0 +1,58 @@
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+do_env/
+
+# Distribuição de pacotes
+*.egg
+*.egg-info/
+dist/
+build/
+*.bak
+
+# Ambiente virtual (venv, virtualenv)
+venv/
+env/
+develop/
+.env
+.venv/
+*.xlsx
+
+# Arquivos do Jupyter Notebook
+.ipynb_checkpoints/
+
+# Arquivos de IDEs
+.vscode/
+.idea/
+*.swp
+
+# Arquivos de configurações do PyCharm
+.pyCharm/
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Arquivos de banco de dados SQLite
+*.sqlite3
+*.db
+
+# Arquivos de teste
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.hypothesis/
+.tox/
+.nox/
+
+# Sistema operacional
+.DS_Store  # Para macOS
+Thumbs.db  # Para Windows
+
+/bkp
