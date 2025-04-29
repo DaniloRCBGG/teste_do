@@ -3,7 +3,8 @@
 *.pyo
 *.pyd
 __pycache__/
-do_env/
+do_env313/
+do_env311/
 
 # Distribuição de pacotes
 *.egg
