@@ -2,13 +2,20 @@ import requests
 import PyPDF2
 import smtplib
 import os
-from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
-from email.mime.text import MIMEText
 from io import BytesIO
 from datetime import datetime
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from prefect import flow, task
+from prefect.variables import Variable
+from prefect.blocks.system import Secret
 
 load_dotenv()
+sender_email_credentials = Secret.load("email-sigeo-naoResponda").get()
+recipient_email_credentials = Secret.load("email-sigeo-atendimento").get()
+do_data_to_search = Variable.get("do-aplicacao-palavras-para-buscar")
+
 
 # Mapeamento dos meses para abreviações em português
 MESES_PT = {
@@ -17,13 +24,17 @@ MESES_PT = {
 }
 
 # Configurações do e-mail
-EMAIL_REMETENTE = os.getenv("SENDER_EMAIL_ADDRESS")
-EMAIL_DESTINATARIO = os.getenv("RECIPIENT_EMAIL_ADDRESS")
-EMAIL_SENHA = os.getenv("SENDER_EMAIL_PASSWORD")
+EMAIL_REMETENTE = os.getenv(
+    "SENDER_EMAIL_ADDRESS") or sender_email_credentials["address"]
+EMAIL_SENHA = os.getenv(
+    "SENDER_EMAIL_PASSWORD") or sender_email_credentials["password"]
+EMAIL_DESTINATARIO = os.getenv(
+    "RECIPIENT_EMAIL_ADDRESS") or recipient_email_credentials["address"]
 
-DATA_TO_SEARCH = os.getenv("DATA_TO_SEARCH")
+DATA_TO_SEARCH = os.getenv("DATA_TO_SEARCH") or do_data_to_search
 
 
+@task
 def gerar_url_diario_oficial():
     """Gera a URL do Diário Oficial de hoje."""
     data_atual = datetime.now()
@@ -34,6 +45,7 @@ def gerar_url_diario_oficial():
     return f"https://diariooficial.niteroi.rj.gov.br/do/{ano}/{mes_numero:02d}_{mes_abrev}/{dia}.pdf"
 
 
+@task
 def enviar_email(assunto, corpo):
     """Envia um e-mail com o assunto e corpo fornecidos."""
     msg = MIMEMultipart()
@@ -53,6 +65,7 @@ def enviar_email(assunto, corpo):
         print(f"Falha ao enviar e-mail: {e}")
 
 
+@task
 def buscar_dados_no_pdf(url, dados):
     """Busca os dados no PDF e retorna uma mensagem formatada."""
     mensagem_final = f"Relatório de Pesquisa no Diário Oficial\nURL: {url}\n\n"
@@ -84,7 +97,8 @@ def buscar_dados_no_pdf(url, dados):
     return mensagem_final if encontrou_dado else None
 
 
-def main():
+@flow(name="pesquisa no diário oficial", log_prints=True)
+def pesquisa_do_flow():
     """Função principal que executa a busca e envia o e-mail se necessário."""
     dados_buscados = [item.strip()
                       for item in DATA_TO_SEARCH.split(",") if item.strip()]
@@ -101,4 +115,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    pesquisa_do_flow()
