@@ -5,6 +5,8 @@
 __pycache__/
 do_env313/
 do_env311/
+do_env312/
+do_env/
 
 # Distribuição de pacotes
 *.egg

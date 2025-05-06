@@ -12,9 +12,9 @@ from prefect.variables import Variable
 from prefect.blocks.system import Secret
 
 load_dotenv()
-sender_email_credentials = Secret.load("email-sigeo-naoResponda").get()
-recipient_email_credentials = Secret.load("email-sigeo-atendimento").get()
-do_data_to_search = Variable.get("do-aplicacao-palavras-para-buscar")
+# sender_email_credentials = Secret.load("nao-responda-credentials").get()
+# recipient_email_credentials = Secret.load("sigeo-email-credentials").get()
+# do_keys_to_search = Variable.get("do_aplication_search_keys")["VALUES"]
 
 
 # Mapeamento dos meses para abreviações em português
@@ -25,13 +25,13 @@ MESES_PT = {
 
 # Configurações do e-mail
 EMAIL_REMETENTE = os.getenv(
-    "SENDER_EMAIL_ADDRESS") or sender_email_credentials["address"]
+    "SENDER_EMAIL_ADDRESS") or sender_email_credentials["EMAIL"]
 EMAIL_SENHA = os.getenv(
-    "SENDER_EMAIL_PASSWORD") or sender_email_credentials["password"]
+    "SENDER_EMAIL_PASSWORD") or sender_email_credentials["PASSWORD"]
 EMAIL_DESTINATARIO = os.getenv(
-    "RECIPIENT_EMAIL_ADDRESS") or recipient_email_credentials["address"]
+    "RECIPIENT_EMAIL_ADDRESS") or recipient_email_credentials["EMAIL"]
 
-DATA_TO_SEARCH = os.getenv("DATA_TO_SEARCH") or do_data_to_search
+KEYS_TO_SEARCH = os.getenv("KEYS_TO_SEARCH") or do_keys_to_search
 
 
 @task
@@ -100,8 +100,8 @@ def buscar_dados_no_pdf(url, dados):
 @flow(name="pesquisa no diário oficial", log_prints=True)
 def pesquisa_do_flow():
     """Função principal que executa a busca e envia o e-mail se necessário."""
-    dados_buscados = [item.strip()
-                      for item in DATA_TO_SEARCH.split(",") if item.strip()]
+    dados_buscados = [key.strip()
+                      for key in KEYS_TO_SEARCH.split(",") if key.strip()]
     url_diario = gerar_url_diario_oficial()
 
     resultado_pesquisa = buscar_dados_no_pdf(url_diario, dados_buscados)
