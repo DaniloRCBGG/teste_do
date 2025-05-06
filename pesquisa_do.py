@@ -12,7 +12,7 @@ from prefect.variables import Variable
 from prefect.blocks.system import Secret
 
 load_dotenv()
-sender_email_credentials = Secret.load("nao-responda-credentials").get()
+sender_email_credentials = Secret.load("nao-responda-email-credentials").get()
 recipient_email_credentials = Secret.load("sigeo-email-credentials").get()
 do_keys_to_search = Variable.get("do_aplication_search_keys")["VALUES"]
 
