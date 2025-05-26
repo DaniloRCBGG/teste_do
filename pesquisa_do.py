@@ -99,8 +99,8 @@ def buscar_dados_no_pdf(url, dados):
 
 @flow(name="pesquisa no diário oficial", log_prints=True)
 def pesquisa_do_flow():
-    print("Email remetente:", EMAIL_REMETENTE)
-    print("Email destinatário:", EMAIL_DESTINATARIO)
+    print("Email remetente:", sender_email_credentials)
+    print("Email destinatário:", recipient_email_credentials)
     """Função principal que executa a busca e envia o e-mail se necessário."""
     dados_buscados = [key.strip()
                       for key in KEYS_TO_SEARCH.split(",") if key.strip()]
