@@ -8,7 +8,7 @@ from io import BytesIO
 import PyPDF2
 import requests
 from dotenv import load_dotenv
-from prefect import FlowRetry, flow, task
+from prefect import flow, task
 from prefect.blocks.system import Secret
 from prefect.variables import Variable
 
