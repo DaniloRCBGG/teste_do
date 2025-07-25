@@ -98,10 +98,6 @@ def buscar_dados_no_pdf(url, dados):
     return mensagem_final if encontrou_dado else None
 
 
-import requests
-from prefect import flow
-
-
 @flow(name="pesquisa no diário oficial", log_prints=True, retries=4, retry_delay_seconds=3600)
 def pesquisa_do_flow():
     """Fluxo que busca dados no Diário Oficial e envia e-mail se necessário."""
