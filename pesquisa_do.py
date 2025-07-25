@@ -98,22 +98,34 @@ def buscar_dados_no_pdf(url, dados):
     return mensagem_final if encontrou_dado else None
 
 
-@flow(name="pesquisa no diário oficial",log_prints=True,retries=3,retry_delay_seconds=3600)
+import requests
+from prefect import flow
+
+
+@flow(name="pesquisa no diário oficial", log_prints=True, retries=4, retry_delay_seconds=3600)
 def pesquisa_do_flow():
-    """Função principal que executa a busca e envia o e-mail se necessário."""
-    dados_buscados = [key.strip()
-                      for key in KEYS_TO_SEARCH.split(",") if key.strip()]
+    """Fluxo que busca dados no Diário Oficial e envia e-mail se necessário."""
+
+    dados_buscados = [key.strip() for key in KEYS_TO_SEARCH.split(",") if key.strip()]
+
     url_diario = gerar_url_diario_oficial()
+    if not url_diario:
+        raise ValueError("Falha ao gerar a URL do Diário Oficial.")
+
+    # 3. Verificar se a URL está disponível
+    try:
+        response = requests.get(url_diario)
+        if response.status_code != 200 or not response.content:
+            raise ValueError("Diário oficial ainda não disponível.")
+    except Exception as e:
+        raise ValueError(f"Erro ao acessar o Diário Oficial: {e}")
 
     resultado_pesquisa = buscar_dados_no_pdf(url_diario, dados_buscados)
+    if not resultado_pesquisa:
+        raise ValueError("Nenhum dado procurado foi encontrado no Diário Oficial.")
 
-    if resultado_pesquisa:
-        enviar_email("Busca por dados no DO retornou resultados",
-                     resultado_pesquisa)
-        print(resultado_pesquisa)  # Apenas para depuração
-    else:
-        print("Nenhum dado procurado foi encontrado no diário oficial")
-        raise FlowRetry("Diário oficial ainda não disponível – tentando novamente em 1 hora.")
+    enviar_email("Busca por dados no DO retornou resultados", resultado_pesquisa)
+    print("Email enviado com sucesso.")
 
 
 if __name__ == "__main__":
