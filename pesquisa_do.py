@@ -1,15 +1,16 @@
-import requests
-import PyPDF2
-import smtplib
 import os
-from dotenv import load_dotenv
-from io import BytesIO
+import smtplib
 from datetime import datetime
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from io import BytesIO
+
+import PyPDF2
+import requests
+from dotenv import load_dotenv
 from prefect import flow, task
-from prefect.variables import Variable
 from prefect.blocks.system import Secret
+from prefect.variables import Variable
 
 load_dotenv()
 sender_email_credentials = Secret.load("nao-responda-email-credentials").get()
@@ -97,7 +98,7 @@ def buscar_dados_no_pdf(url, dados):
     return mensagem_final if encontrou_dado else None
 
 
-@flow(name="pesquisa no diário oficial", log_prints=True)
+@flow(name="pesquisa no diário oficial",log_prints=True,retries=3,retry_delay_seconds=3600)
 def pesquisa_do_flow():
     """Função principal que executa a busca e envia o e-mail se necessário."""
     dados_buscados = [key.strip()
