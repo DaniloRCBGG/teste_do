@@ -8,7 +8,7 @@ from io import BytesIO
 import PyPDF2
 import requests
 from dotenv import load_dotenv
-from prefect import flow, task
+from prefect import FlowRetry, flow, task
 from prefect.blocks.system import Secret
 from prefect.variables import Variable
 
@@ -113,6 +113,7 @@ def pesquisa_do_flow():
         print(resultado_pesquisa)  # Apenas para depuração
     else:
         print("Nenhum dado procurado foi encontrado no diário oficial")
+        raise FlowRetry("Diário oficial ainda não disponível – tentando novamente em 1 hora.")
 
 
 if __name__ == "__main__":
