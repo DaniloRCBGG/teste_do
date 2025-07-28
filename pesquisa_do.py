@@ -42,7 +42,8 @@ def gerar_url_diario_oficial():
     mes_numero = data_atual.month
     mes_abrev = MESES_PT[mes_numero]
     dia = data_atual.strftime("%d")
-    return f"https://diariooficial.niteroi.rj.gov.br/do/2025/07_Jul/05.pdf"
+    return f"https://diariooficial.niteroi.rj.gov.br/do/{ano}/{mes_numero:02d}_{mes_abrev}/{dia}.pdf"
+
 
 
 @task
@@ -120,7 +121,7 @@ def buscar_dados_no_pdf(url, dados_dict):
     return (mensagem_final if encontrou_dado else None), texto
 
 
-@flow(name="pesquisa no diário oficial", log_prints=True, retries=4, retry_delay_seconds=3600)
+@flow(name="pesquisa no diário oficial", log_prints=True, retries=4, retry_delay_seconds=30)
 def pesquisa_do_flow():
     """Fluxo principal que pesquisa no D.O., envia e-mail geral e notifica funcionários."""
 
