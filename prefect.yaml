@@ -1,0 +1,41 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: aplicacao_diario_oficial
+prefect-version: 3.4.10
+
+# build section allows you to manage and build docker images
+build: null
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push: null
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/DaniloRCBGG/teste_do.git
+    branch: master
+    access_token: '{{ prefect.blocks.secret.deployment-primeiro-deploy-pesquisa-no-dia-rio-oficial-repo-token
+      }}'
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: primeiro-deploy
+  version: null
+  tags: []
+  concurrency_limit: null
+  description: "Fun\xC3\xA7\xC3\xA3o principal que executa a busca e envia o e-mail\
+    \ se necess\xC3\xA1rio."
+  entrypoint: pesquisa_do.py:pesquisa_do_flow
+  parameters: {}
+  work_pool:
+    name: Testando-do
+    work_queue_name: null
+    job_variables: {}
+  schedules:
+  - interval: 3600.0
+    anchor_date: '2025-07-28T15:01:51.402181+00:00'
+    timezone: UTC
+    active: true

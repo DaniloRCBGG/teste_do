@@ -1,18 +1,19 @@
-import requests
-import PyPDF2
-import smtplib
 import os
-from dotenv import load_dotenv
-from io import BytesIO
+import smtplib
 from datetime import datetime
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from io import BytesIO
+
+import PyPDF2
+import requests
+from dotenv import load_dotenv
 from prefect import flow, task
-from prefect.variables import Variable
 from prefect.blocks.system import Secret
+from prefect.variables import Variable
 
 load_dotenv()
-sender_email_credentials = Secret.load("nao-responda-email-credentials").get()
+sender_email_credentials = Secret.load("danilo-credentials").get()
 recipient_email_credentials = Secret.load("sigeo-email-credentials").get()
 do_keys_to_search = Variable.get("do_aplication_search_keys")["VALUES"]
 

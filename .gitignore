@@ -8,6 +8,7 @@ do_env311/
 do_env312/
 do_env/
 
+
 # Distribuição de pacotes
 *.egg
 *.egg-info/
@@ -22,6 +23,7 @@ develop/
 .env
 .venv/
 *.xlsx
+Ambiente
 
 # Arquivos do Jupyter Notebook
 .ipynb_checkpoints/
