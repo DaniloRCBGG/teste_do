@@ -42,7 +42,7 @@ def gerar_url_diario_oficial():
     mes_numero = data_atual.month
     mes_abrev = MESES_PT[mes_numero]
     dia = data_atual.strftime("%d")
-    return f"https://diariooficial.niteroi.rj.gov.br/do/{ano}/{mes_numero:02d}_{mes_abrev}/{dia}.pdf"
+    return f"https://diariooficial.niteroi.rj.gov.br/do/2025/07_Jul/22.pdf"
 
 
 @task
