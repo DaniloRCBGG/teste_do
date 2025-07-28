@@ -14,7 +14,7 @@ from prefect.variables import Variable
 
 load_dotenv()
 sender_email_credentials = Secret.load("danilo-email").get()
-recipient_email_credentials = Secret.load("danilo-credentials").get()
+recipient_email_credentials = Secret.load("sigeo-email-credentials").get()
 do_keys_to_search = Variable.get("do_aplication_search_keys")["VALUES"]
 
 # Mapeamento dos meses para abreviações em português
