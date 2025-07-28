@@ -1,0 +1,50 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
+name: aplicacao_diario_oficial
+prefect-version: 3.4.10
+
+# build section allows you to manage and build docker images
+build:
+- prefect_docker.deployments.steps.build_docker_image:
+    id: build_image
+    requires: prefect-docker>=0.3.1
+    image_name: '{{ image_name }}'
+    tag: '{{ tag }}'
+    dockerfile: Dockerfile
+
+# push section allows you to manage if and how this project is uploaded to remote locations
+push:
+- prefect_docker.deployments.steps.push_docker_image:
+    requires: prefect-docker>=0.3.1
+    image_name: '{{ build_image.image_name }}'
+    tag: '{{ build_image.tag }}'
+
+# pull section allows you to provide instructions for cloning this project in remote locations
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/DaniloRCBGG/teste_do.git
+    branch: fix/retry
+    access_token: null
+
+# the deployments section allows you to provide configuration for deploying flows
+deployments:
+- name: deploy-github
+  version: null
+  tags: []
+  description: null
+  schedule: null
+  flow_name: pesquisa_do_flow
+  entrypoint: null
+  parameters: {}
+  work_pool:
+    name: null
+    work_queue_name: default
+    job_variables: 
+      image: '{{ build_image.image }}'
+  scm:
+      repository: https://github.com/DaniloRCBGG/teste_do.git
+      branch: master
+      access_token: "{{ prefect.blocks.secret.gh-token }}"
