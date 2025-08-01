@@ -15,7 +15,7 @@ ambiente/
 dist/
 build/
 *.bak
-.yaml
+*.yaml
 
 # Ambiente virtual (venv, virtualenv)
 venv/
