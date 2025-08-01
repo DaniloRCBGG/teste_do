@@ -13,7 +13,7 @@ from prefect.blocks.system import Secret
 from prefect.variables import Variable
 
 load_dotenv()
-sender_email_credentials = Secret.load("danilo-email").get()
+sender_email_credentials = Secret.load("nao-responda-email-credentials").get()
 recipient_email_credentials = Secret.load("sigeo-email-credentials").get()
 do_keys_to_search = Variable.get("do_aplication_search_keys")["VALUES"]
 
@@ -139,10 +139,11 @@ def pesquisa_do_flow():
 
     if not resultado_pesquisa:
         raise ValueError("Nenhum dado procurado foi encontrado no Diário Oficial.")
-
-    enviar_email_geral("Busca por dados no DO retornou resultados", resultado_pesquisa)
-    enviar_emails_para_funcionarios(texto_pdf, url_diario)
-
+    
+    else:
+        enviar_email_geral("Busca por dados no DO retornou resultados", resultado_pesquisa)
+        enviar_emails_para_funcionarios(texto_pdf, url_diario)
+    
 
 if __name__ == "__main__":
     pesquisa_do_flow()
